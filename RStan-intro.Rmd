@@ -1,0 +1,80 @@
+---
+title: "RStan"
+author: "Stephen, Kostis, Jie"
+date: "March 1, 2016"
+output: html_document
+---
+
+Let's see how this works! Instructions from: https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started
+
+and for running multiple chains in parallel using \tttext{doMC}
+
+https://gist.github.com/mike-lawrence/3861998
+
+```{r}
+library(rstan)
+rstan_options(auto_write=TRUE)
+```
+
+Simple fit and objects from said fit:
+
+```{r}
+schools_dat <- list(J = 8, 
+                    y = c(28,  8, -3,  7, -1,  1, 18, 12),
+                    sigma = c(15, 10, 16, 11,  9, 11, 10, 18))
+
+tic <- Sys.time()
+initial_fit <- stan(file = '8schools.stan', data = schools_dat, 
+                    iter = 1000, chains = 4)
+toc <- Sys.time()
+toc-tic
+
+print(initial_fit)
+plot(initial_fit)
+pairs(initial_fit, pars = c("mu", "tau", "lp__"))
+
+la <- extract(initial_fit, permuted = TRUE) # return a list of arrays 
+mu <- la$mu 
+
+### return an array of three dimensions: iterations, chains, parameters 
+a <- extract(initial_fit, permuted = FALSE) 
+
+### use S3 functions as.array (or as.matrix) on stanfit objects
+a2 <- as.array(initial_fit)
+m <- as.matrix(initial_fit)
+```
+
+Run it in parallel:
+
+```{r}
+library(doMC)
+options(cores=2)
+registerDoMC()
+
+tic <- Sys.time()
+serial_fit <- stan(fit = initial_fit,
+                   data = schools_dat, 
+                   iter = 10000,
+                   chains = 4,
+                   verbose = FALSE)
+toc <- Sys.time()
+toc-tic
+
+par_fit <- function(fit, dat, iter){
+    stan_fit <- stan(fit = fit,
+                     data = dat,
+                     iter = iter,
+                     chains = 1,
+                     verbose = F)
+	return(attr(stan_fit,'sim'))
+}
+
+tic <- Sys.time()
+parallel_fit <- foreach(i = 1:4) %dopar%
+    par_fit(fit = initial_fit,
+            dat = schools_dat,
+            iter = 10000)
+toc <- Sys.time()
+toc-tic
+
+```
