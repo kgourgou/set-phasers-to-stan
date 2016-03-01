@@ -14,6 +14,7 @@ https://gist.github.com/mike-lawrence/3861998
 ```{r}
 library(rstan)
 rstan_options(auto_write=TRUE)
+set.seed(1)
 ```
 
 Simple fit and objects from said fit:
@@ -41,7 +42,12 @@ a <- extract(initial_fit, permuted = FALSE)
 
 ### use S3 functions as.array (or as.matrix) on stanfit objects
 a2 <- as.array(initial_fit)
-m <- as.matrix(initial_fit)
+m <- as.matrix(initial_fit) %>%
+    as.data.frame() %>%
+    mutate(chain=rep(seq(1,4),each=500),
+           iteration=rep(seq(1,500),4))
+qplot(data=m, x=iteration, y=mu, color=as.factor(chain), geom="line", alpha=0.6) +
+    theme_bw()
 ```
 
 Run it in parallel:
@@ -76,5 +82,16 @@ parallel_fit <- foreach(i = 1:4) %dopar%
             iter = 10000)
 toc <- Sys.time()
 toc-tic
+
+```
+
+Get pretty outputs:
+
+```{r}
+# library(devtools)
+# install_github("stan-dev/shinystan")
+library(shinystan)
+
+launch_shinystan(serial_fit)
 
 ```
