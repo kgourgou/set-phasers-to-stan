@@ -1,13 +1,12 @@
-# simple regression example 
-# in stan 
+# simple regression example
+# in stan
 
 data {
-  int<lower=0> N;
-  int<lower=0> M;
-  vector[N] x;
-  vector[N] y;
+    int<lower=0> N;
+    int<lower=0> M;
+    matrix[N,M] x;
+    real y[N];
 }
-
 
 transformed data {
     vector[N] cons;

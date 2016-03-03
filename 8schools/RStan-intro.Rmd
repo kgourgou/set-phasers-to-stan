@@ -1,18 +1,23 @@
 ---
-title: "RStan"
+title: "8 Schools"
 author: "Stephen, Kostis, Jie"
 date: "March 1, 2016"
-output: html_document
+output: 
+  pdf_document: 
+    fig_height: 4
+    fig_width: 5
+    keep_tex: yes
 ---
 
 Let's see how this works! Instructions from: https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started
 
-and for running multiple chains in parallel using \tttext{doMC}
+and for running multiple chains in parallel using doMC
 
 https://gist.github.com/mike-lawrence/3861998
 
 ```{r}
 library(rstan)
+library(dplyr)
 rstan_options(auto_write=TRUE)
 set.seed(1)
 ```
@@ -87,7 +92,7 @@ toc-tic
 
 Get pretty outputs:
 
-```{r}
+```{r, eval=FALSE}
 # library(devtools)
 # install_github("stan-dev/shinystan")
 library(shinystan)
