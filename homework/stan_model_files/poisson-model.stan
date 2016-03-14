@@ -5,20 +5,20 @@
 # within python (with pystan).
 
 data{
-  int<lower=0> N;
-  vector[N] t;
-  int<lower=0> x[N];
+  int<lower=0> N; ## number of time steps
+  vector[N] t; ## time value at each time step
+  int x[N]; ## population value at each time step
 }
 
 transformed data{
-  real<lower=0> x0;
+  real x0; ## starting population value
 
   x0 <- x[1];
 }
 
 parameters{
-  real<lower=0> alpha;
-  real<lower=0> mu;
+  real<lower=0> alpha; ## birth rate parameter
+  real<lower=0> mu; ## death rate parameter
 }
 
 model {
