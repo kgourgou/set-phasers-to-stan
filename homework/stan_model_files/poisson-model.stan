@@ -5,7 +5,6 @@
 # within python (with pystan).
 
 data{
-
   int<lower=0> N;
   vector[N] t;
   int<lower=0> x[N];
@@ -23,5 +22,5 @@ parameters{
 }
 
 model {
-      x ~ poisson(alpha/mu+(x0-alpha/mu)*exp(-mu*t));
+      x ~ poisson(); ## fill this part in
 }
