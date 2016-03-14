@@ -7,12 +7,12 @@
 data{
 
   int<lower=0> N;
-  real t[N];
-  real x[N]
+  vector[N] t;
+  int<lower=0> x[N];
 }
 
 transformed data{
-  real x0;
+  real<lower=0> x0;
 
   x0 <- x[1];
 }
