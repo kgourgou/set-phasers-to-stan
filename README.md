@@ -1,6 +1,6 @@
 # Set phasers to Stan
 
-Homework branch : 
+## Homework  
 
 You can find a description of the homework within the ``homework/latex/''
 directory. 
