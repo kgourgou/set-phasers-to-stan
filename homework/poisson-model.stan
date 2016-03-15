@@ -22,8 +22,10 @@ parameters{
 }
 
 model {
-      ## Fill this part in
+      ## Fill the poisson part in with the correct
+      ## function of the parameters. 
+
       ## You will need to include the initial value
-      ## x0 in the model
-      x ~ poisson(alpha/mu+(x0-alpha/mu)*exp(-mu*t)); 
+      ## for the population, x0, in the model.
+      x ~ poisson(); 
 }
