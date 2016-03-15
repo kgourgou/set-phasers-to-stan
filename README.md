@@ -1,2 +1,8 @@
 # Set phasers to Stan
-Examples, slides, and other stuff relating to STAN. 
+
+Homework branch : 
+
+You can find a description of the homework within the ``homework/latex/''
+directory. 
+
+Check the examples and the documentation too!
