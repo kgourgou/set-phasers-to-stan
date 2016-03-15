@@ -73,6 +73,10 @@
 
 Stan is a probabilistic programming language that can be used to estimate the parameters that generated observed data. To see this, you will use Stan to estimate the parameters you chose in generating the data for Homework 4 using the Stochastic Simulation Algorithm (SSA).
 
+Note that, for this homework, you will need to install the corresponding Stan
+library, depending on the language you use (RStan for R, PyStan for Python,
+etc.). Check the Stan website under ``interfaces'' for details. 
+
 \section{Required}
 
 \begin{enumerate}
@@ -80,7 +84,7 @@ Stan is a probabilistic programming language that can be used to estimate the pa
     \item Write a script (R, Python, MATLAB, etc.) that loads the data from the
       SSA (either stored or simulated within the script), sets up the relevant
       dictionaries and calls the stan function. For this, we provide skeleton
-      scripts, in case you don't want to write your own. 
+      scripts (for R and Python), in case you don't want to write your own. 
 \end{enumerate}
 
 Then, run the estimation for various values of $\alpha$ and $\mu$. How accurate
