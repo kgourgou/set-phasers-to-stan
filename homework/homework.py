@@ -43,7 +43,8 @@ path_data = {
     'x' : X # The path provided by the SSA
 }
 
-fit = pystan.stan(file='../stan_model_files/poisson-model.stan',data=path_data,
+# Add the name of the .stan file in the function below. 
+fit = pystan.stan(file='',data=path_data,
                   iter=1000,chains=1)
 
 print fit
