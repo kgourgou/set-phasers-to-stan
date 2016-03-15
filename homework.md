@@ -1,2 +1,0 @@
-# STAN Homework 
-
