@@ -17,13 +17,10 @@ transformed data{
 }
 
 parameters{
-  real<lower=0> alpha; ## birth rate parameter
+  real<lower=0> alpha; ## birth rate parameter 
   real<lower=0> mu; ## death rate parameter
 }
 
 model {
-      ## Fill this part in
-      ## You will need to include the initial value
-      ## x0 in the model
       x ~ poisson(alpha/mu+(x0-alpha/mu)*exp(-mu*t)); 
 }

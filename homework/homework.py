@@ -39,55 +39,75 @@ def SSA(xinit, nsteps, a=10.0, mu=1.0):
     '''
         Using SSA to exactly simulate the death/birth process starting
         from xinit and for nsteps. 
-        
+
         a and mu are parameters of the propensities.
-        
+
         Returns
         =======
         path : array-like, the path generated. 
         tpath: stochastic time steps
     '''
-    
-   
     path = np.zeros(nsteps)
     tpath= np.zeros(nsteps)
-    
+
     path[0] = xinit # initial population
-    
     u = rand(2,nsteps) # pre-pick all the uniform variates we need
-    
+
     for i in xrange(1,nsteps):
-        
         # The propensities will be normalized
         tot_prop = path[i-1]*mu+a
         prob = path[i-1]*mu/tot_prop # probability of death 
-        
+
         if(u[0,i]<prob):
             # Death 
             path[i] = path[i-1]-1 
         else:
             # Birth
             path[i] = path[i-1]+1
-            
-        # Time stayed at current state    
+
+        # Time stayed at current state
         tpath[i] = -np.log(u[1,i])*1/tot_prop
-        
-       
     tpath = np.cumsum(tpath)
-    return path, tpath 
+    return path, tpath
 
 
-n = 100
-X, tpath = SSA(xinit=100,nsteps=n,a=1.0,mu=1.0) 
+def runMe(xinit=100,nsteps=100,alpha=1.0,mu=1.0, iter=1000, fit=None):
+    '''
 
-X = X.astype(int) # Casting the X vector as an integer
+     Arguments
+     ==========
+      xinit : int, initial value for the SSA simulation.
+      nsteps : int, number of samples to generate from SSA.
+      alpha : real, non-negative, parameter controlling death rate.
+      mu : real, positive, parameter controlling birth rate.
+      iter : int, number of iterations to run in stan. 
 
-path_data = {
-    'N' : n, # number of data points
-    't' : tpath, # time steps, t_i=t_{i-1}+dt_i, dt_i provided by SSA
-    'x' : X # The path provided by the SSA
-}
+    '''
+    X, tpath = SSA(xinit,nsteps,a=alpha,mu=mu)
 
-fit = pystan.stan(file='../stan_model_files/poisson-model.stan',data=path_data,
-                  iter=1000,chains=1)
+    X = X.astype(int) # Casting the X vector as an integer
+
+    path_data = {
+        'N' : nsteps, # number of data points
+        't' : tpath, # time steps, t_i=t_{i-1}+dt_i, dt_i provided by SSA
+        'x' : X # The path provided by the SSA
+    }
+
+    if(fit == None):
+        fit = pystan.stan(file='poisson-model.stan',data=path_data,
+                      iter=iter,chains=1, verbose=False)
+
+    else :
+        fit = pystan.stan(fit=fit, data=path_data, iter=iter, chains=1, verbose=False)
+
+
+    print fit
+    print '\nRemember : alpha=' + str(alpha) + ' and mu=' + str(mu)
+
+
+
+    return fit
+
+fit = runMe(nsteps=100);
+
 
