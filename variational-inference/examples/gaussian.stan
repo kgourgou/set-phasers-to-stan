@@ -14,5 +14,8 @@ parameters {
 }
 
 model {
-  y ~ normal(X * beta, sigma);
+
+  ## Need to define prior
+  ## and likelihood here.
+
 }
