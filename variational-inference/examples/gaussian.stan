@@ -3,13 +3,12 @@
 
 data {
   int<lower=0> N;
-  int<lower=0> M;
-  real x[N];
+  real y[N];
 }
 
 
 parameters {
-  vector[M+1] beta;
+  real mu;
   real<lower=0> sigma;
 }
 
@@ -17,5 +16,11 @@ model {
 
   ## Need to define prior
   ## and likelihood here.
+
+  mu ~ normal(0,10);
+  sigma ~ exponential(0.7);
+
+  for (n in 1:N)
+    y[n] ~ normal(mu,sigma);
 
 }

@@ -1,13 +1,25 @@
+setwd("~/Dropbox/UMassCourses/set-phasers-to-stan/variational-inference/examples/")
+
 library(ggplot2)
 library(rstan)
 
 # generate data following normal distribution
-set.seed(1)
+N <- 1000
 
-N <- 100
-M <- 1
+y <- sqrt(2)*rnorm(N)+10
 
-x <- rnorm(N)
+m <- stan_model(file="gaussian.stan")
+f <- vb(m)
 
-# quick histogram
-qplot(y, geom="histogram")
+print(f)
+
+params<-extract(f,pars=c("mu","sigma"))
+
+inf_mu <- mean(params$mu)
+inf_sigma <- mean(params$sigma)
+
+Y <- seq(inf_mu-2,inf_mu+2, length.out = 100 )
+Y_Gaussian_model <- dnorm(Y,mean=inf_mu, sd=inf_sigma)
+Y_Gaussian_exact <- dnorm(Y,mean=0, sd=1)
+
+## Plot those above at the same graph
