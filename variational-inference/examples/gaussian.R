@@ -8,7 +8,7 @@ N <- 1000
 
 y <- sqrt(2)*rnorm(N)+10
 
-m <- stan_model(file="gaussian.stan")
+m <- stan_model(file="variational-inference/examples/gaussian.stan")
 f <- vb(m)
 
 print(f)
@@ -20,6 +20,18 @@ inf_sigma <- mean(params$sigma)
 
 Y <- seq(inf_mu-2,inf_mu+2, length.out = 100 )
 Y_Gaussian_model <- dnorm(Y,mean=inf_mu, sd=inf_sigma)
-Y_Gaussian_exact <- dnorm(Y,mean=0, sd=1)
+Y_Gaussian_exact <- dnorm(Y,mean=10, sd=2)
 
 ## Plot those above at the same graph
+ggplot() +
+    geom_line(aes(x=Y,
+                  y=Y_Gaussian_model,
+                  color="Y_Gaussian_model",
+                  linetype="Y_Gaussian_model")) +
+    geom_line(aes(x=Y,
+                  y=Y_Gaussian_exact,
+                  color="Y_Gaussian_exact",
+                  linetype="Y_Gaussian_exact")) +
+    scale_color_discrete("") +
+    scale_linetype_discrete("") +
+    theme_bw()
