@@ -1,4 +1,4 @@
-setwd("~/Dropbox/UMassCourses/set-phasers-to-stan/variational-inference/examples/")
+# setwd("~/Dropbox/UMassCourses/set-phasers-to-stan/variational-inference/examples/")
 
 library(ggplot2)
 library(rstan)
@@ -20,7 +20,7 @@ inf_sigma <- mean(params$sigma)
 
 Y <- seq(inf_mu-2,inf_mu+2, length.out = 100 )
 Y_Gaussian_model <- dnorm(Y,mean=inf_mu, sd=inf_sigma)
-Y_Gaussian_exact <- dnorm(Y,mean=10, sd=2)
+Y_Gaussian_exact <- dnorm(Y,mean=10, sd=sqrt(2))
 
 ## Plot those above at the same graph
 ggplot() +
@@ -32,6 +32,7 @@ ggplot() +
                   y=Y_Gaussian_exact,
                   color="Y_Gaussian_exact",
                   linetype="Y_Gaussian_exact")) +
+    scale_y_continuous("Density") +
     scale_color_discrete("") +
     scale_linetype_discrete("") +
     theme_bw()
