@@ -17,9 +17,6 @@ model {
   ## Need to define prior
   ## and likelihood here.
 
-  mu ~ normal(0,10);
-  sigma ~ exponential(0.7);
-
   for (n in 1:N)
     y[n] ~ normal(mu,sigma);
 

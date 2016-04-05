@@ -1,17 +1,15 @@
 # setwd("~/Dropbox/UMassCourses/set-phasers-to-stan/variational-inference/examples/")
+# Simple example 1
 
 library(ggplot2)
 library(rstan)
 
-# generate data following normal distribution
+# Normally distributed data
 N <- 1000
-
 y <- sqrt(2)*rnorm(N)+10
 
-m <- stan_model(file="variational-inference/examples/gaussian.stan")
+m <- stan_model(file="gaussian.stan")
 f <- vb(m)
-
-print(f)
 
 params<-extract(f,pars=c("mu","sigma"))
 
