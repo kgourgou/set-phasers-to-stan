@@ -1,0 +1,74 @@
+---
+title: "Homework 5"
+author: "Stephen, Kostis, Jie"
+date: "March 1, 2016"
+output: 
+  pdf_document: 
+    fig_height: 4
+    fig_width: 5
+    keep_tex: yes
+---
+
+
+
+```{r, include=FALSE}
+library(rstan)
+library(dplyr)
+library(ggplot2)
+rstan_options(auto_write=TRUE)
+set.seed(1)
+```
+
+Simple fit and objects from said fit:
+
+```{r}
+birth_death_ssa <- function(alpha,
+                            mu,
+                            x0,
+                            Time){
+    
+    x <- x0
+    t <- 0
+    i=2
+    while(t[length(t)]<Time){
+        a_sum <- alpha+mu*x[i-1]
+        xi_1 <- runif(1)
+        xi_2 <- runif(1)
+        rxn <- ifelse(xi_1*a_sum>alpha, -1, 1)
+        tau <- log(1/xi_2)/a_sum
+        x[i] <- x[i-1]+rxn
+        t[i] <- t[i-1]+tau
+        i <- i+1
+    }
+    return(list(x=x, t=t))
+}
+
+ssa_1 <- birth_death_ssa(alpha=20, mu=10, x0=20, Time=100)
+ssa_1$N <- length(ssa_1$x)
+
+qplot(data=as.data.frame(ssa_1), x=t, y=x, geom="line")
+
+tic <- Sys.time()
+nuts_fit <- stan(file = 'advi-presentation/birth-death-script.stan',
+                 data = ssa_1, 
+                 iter = 1000,
+                 chains = 4)
+toc <- Sys.time()
+toc-tic
+
+print(nuts_fit)
+plot(nuts_fit)
+pairs(nuts_fit)
+
+model_fit <- stan_model(file = 'advi-presentation/birth-death-script.stan')
+tic2 <- Sys.time()
+vi_fit <- vb(model_fit,
+             data = ssa_1, 
+             iter = 100000)
+toc2 <- Sys.time()
+toc2-tic2
+
+print(vi_fit)
+plot(vi_fit)
+pairs(vi_fit)
+```
