@@ -8,6 +8,7 @@ library(rstan)
 
 # multimodal by a mixture of gaussians
 N <- 1000
+k <-
 y1 <- rnorm(N)
 y2 <- log(100) + rnorm(N)
 mix <- rbinom(N,size=1, prob=0.4)
@@ -24,7 +25,7 @@ params<-extract(f,pars=c("mu","sigma"))
 inf_mu <- mean(params$mu)
 inf_sigma <- mean(params$sigma)
 
-Y <- seq(inf_mu-5,inf_mu+5, length.out = 100 )
+Y <- seq(inf_mu-7,inf_mu+7, length.out = 100 )
 Y_Gaussian_model <- dnorm(Y,mean=inf_mu, sd=inf_sigma)
 
 print(f)
