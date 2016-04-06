@@ -1,7 +1,7 @@
 ---
-title: "Homework 5"
+title: "ADVI vs NUTS"
 author: "Stephen, Kostis, Jie"
-date: "March 1, 2016"
+date: "April 5, 2016"
 output: 
   pdf_document: 
     fig_height: 4
@@ -17,11 +17,7 @@ library(dplyr)
 library(ggplot2)
 rstan_options(auto_write=TRUE)
 set.seed(1)
-```
 
-Simple fit and objects from said fit:
-
-```{r}
 birth_death_ssa <- function(alpha,
                             mu,
                             x0,
@@ -43,13 +39,21 @@ birth_death_ssa <- function(alpha,
     return(list(x=x, t=t))
 }
 
-ssa_1 <- birth_death_ssa(alpha=20, mu=10, x0=20, Time=100)
+ssa_1 <- birth_death_ssa(alpha=10, mu=1, x0=20, Time=100)
 ssa_1$N <- length(ssa_1$x)
+setwd("../")
+ssa_fit <- stan(file='advi-presentation/birth-death-script.stan', data=ssa_1, iter=1000, chains=1)
+```
 
-qplot(data=as.data.frame(ssa_1), x=t, y=x, geom="line")
+Birth-death SSA model with $\alpha=20$, $\mu=10$, and $x_0=20$ in NUTS and variational inference.
+
+```{r}
+setwd("../")
+
+qplot(data=as.data.frame(ssa_1), x=t, y=x, geom="step")
 
 tic <- Sys.time()
-nuts_fit <- stan(file = 'advi-presentation/birth-death-script.stan',
+nuts_fit <- stan(fit = ssa_fit,
                  data = ssa_1, 
                  iter = 1000,
                  chains = 4)
@@ -70,5 +74,14 @@ toc2-tic2
 
 print(vi_fit)
 plot(vi_fit)
-pairs(vi_fit)
+
+vi_ssa <- birth_death_ssa(alpha = median(vi_fit@sim$samples[[1]]$alpha),
+                          mu = median(vi_fit@sim$samples[[1]]$mu),
+                          x0 = 20,
+                          Time=100)
+
+ggplot() +
+    geom_step(data=as.data.frame(ssa_1), aes(x=t, y=x, color="Truth"), alpha=0.5) +
+    geom_step(data=as.data.frame(vi_ssa), aes(x=t, y=x, color="VI estimate"), alpha=0.5) +
+    theme_bw()
 ```

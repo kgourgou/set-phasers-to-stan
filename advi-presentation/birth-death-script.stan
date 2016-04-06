@@ -21,6 +21,14 @@ parameters{
   real<lower=0> mu; ## death rate parameter
 }
 
+transformed parameters{
+    real<lower=0> bd_ratio;
+
+    bd_ratio <- alpha/mu;
+}
+
 model {
-      x ~ poisson(alpha/mu+(x0-alpha/mu)*exp(-mu*t)); ## fill this part in
+    // alpha ~ gamma(1.5, .05);
+    // mu ~ gamma(1.5, .05);
+    x ~ poisson(bd_ratio+(x0-bd_ratio)*exp(-mu*t));
 }

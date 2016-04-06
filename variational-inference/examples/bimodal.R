@@ -1,7 +1,7 @@
 # Simple example 2
-# Bi-modal distribution 
+# Bi-modal distribution
 
-setwd("~/Dropbox/UMassCourses/set-phasers-to-stan/variational-inference/examples/")
+# setwd("~/Dropbox/UMassCourses/set-phasers-to-stan/variational-inference/examples/")
 
 library(ggplot2)
 library(rstan)
@@ -16,7 +16,7 @@ y <- (1-mix)*y1 + mix*y2
 qplot(y, geom="density")
 
 
-m <- stan_model(file="gaussian.stan")
+m <- stan_model(file="variational-inference/examples/gaussian.stan")
 f <- vb(m)
 
 params<-extract(f,pars=c("mu","sigma"))
@@ -24,13 +24,13 @@ params<-extract(f,pars=c("mu","sigma"))
 inf_mu <- mean(params$mu)
 inf_sigma <- mean(params$sigma)
 
-Y <- seq(inf_mu-2,inf_mu+2, length.out = 100 )
+Y <- seq(inf_mu-5,inf_mu+5, length.out = 100 )
 Y_Gaussian_model <- dnorm(Y,mean=inf_mu, sd=inf_sigma)
 
 print(f)
 
 
-ggplot() + 
+ggplot() +
   geom_line(aes(x=Y, y=Y_Gaussian_model, color="Y_Gaussian_model", linetype="Y_Gaussian_model")) +
   geom_density(aes(x=y)) +
   theme_bw()
