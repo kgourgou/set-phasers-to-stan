@@ -8,7 +8,7 @@ library(rstan)
 
 # multimodal by a mixture of gaussians
 N <- 1000
-k <- 
+k <- 2
 y1 <- rnorm(N)
 y2 <- log(100) + rnorm(N)
 mix <- rbinom(N,size=1, prob=0.4)
