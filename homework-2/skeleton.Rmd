@@ -1,0 +1,79 @@
+---
+title: "Variational Inference Homework"
+author: "Jie, Stephen, Kostis"
+date: "04/18/2016"
+output:
+  html_document:
+    highlight: pygments
+    theme: readable
+---
+
+Skeleton markdown file for the second homework by the variational inference team. Feel free to edit this to do your homework.
+
+```{r}
+library(ggplot2)
+```
+
+We shall attempt to solve an easy problem, that is, recover a pair of parameters with variational inferenceffor normal distributions. To carry it out, we would usually need the ELBO because usually we cannot compute the KL. However, from problem 1. and the result you showed, we know that the KL should be computable in a closed form as a Bregman divergence. As we said in class, 
+ 
+ $$
+ D_{KL}(p\|q)=\log\frac{\sigma_2}{\sigma_1}+\frac{\sigma_1^2+(\mu_1-\mu_2)^2}{2\sigma_2^2}-\frac{1}{2}.
+ $$
+
+Let us fix the parameters of the $q$ distribution. 
+
+```{r}
+q <- c(mu=0.4,sigma=3)
+```
+
+And define the KL as a function of those parameters. 
+
+```{r}
+KL <- function(par1,par2){
+  result <- log(par2['sigma']/par1['sigma'])+
+                (par1['sigma']^2+(par1['mu']-par2['mu'])^2)/(2*par2['sigma']^2)-1/2.0
+  
+  names(result) <- "KL"
+  return(result)
+}
+
+p <- c(mu=0.1,sigma=3.)
+```
+
+Note that if we fix just the $\sigma$'s, the KL is symmetric. 
+```{r}
+KL(p,q)
+KL(q,p)
+```
+
+```{r}
+mu <- seq(from=-3,to=3,length.out = 100)
+KLFvals <- rep(0,times=100)
+KLBvals <- rep(0,times=100)
+
+for( i in 1:100){
+  
+  p['mu'] <- mu[i]
+  KLFvals[i] <- KL(p,q)
+  KLBvals[i] <- KL(q,p)  
+}
+
+plt<-ggplot() 
+plt<- plt+geom_line(aes(x=mu,y=KLFvals))
+plt<- plt+ylab("KL")
+plt
+```
+
+To recover the parameters you picked above, we need to minimize the KL. To do this, you may use any R package that can do optimization. Here we use the generic "optim" function in R. 
+
+```{r}
+# wrapper for the KL so that
+# we can call it with one argument fixed. 
+KLfun <- function(par){
+  return(KL(par,q))
+}
+
+pinit <- c(mu=3,sigma=5)
+
+optim(pinit,KLfun)
+```
