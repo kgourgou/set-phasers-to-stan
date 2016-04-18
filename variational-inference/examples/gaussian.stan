@@ -14,9 +14,8 @@ parameters {
 
 model {
 
-  ## Need to define prior
-  ## and likelihood here.
-
+ 
+  #likelihood
   for (n in 1:N)
     y[n] ~ normal(mu,sigma);
 

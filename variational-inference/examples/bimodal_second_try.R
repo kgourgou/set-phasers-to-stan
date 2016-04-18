@@ -16,17 +16,18 @@ qplot(y, geom="density")
 
 
 m <- stan_model(file="bimodal.stan")
-f <- vb(m)
+f <- vb(m,algorithm="meanfield")
 
 params <- extract(f, pars=c("theta[1]","theta[2]","mu[1]","mu[2]"))
 
+print(f)
 
-
-Y <- seq(-10,10, length.out = 100 )
-Y_model <- 0.57*dnorm(Y,mean=-0.02) + 0.43*dnorm(Y, mean=4.54)
+Y <- seq(inf_mu-13,inf_mu+13, length.out = 100 )
+Y_model <- 0.44*dnorm(Y,mean=4.54) + 0.56*dnorm(Y, mean=0.05)
 
 
 ggplot() + 
   geom_line(aes(x=Y, y=Y_model, color="Y_model", linetype="Y_model")) +
   geom_density(aes(x=y)) +
   theme_bw()
+

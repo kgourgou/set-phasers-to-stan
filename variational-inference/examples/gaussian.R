@@ -9,7 +9,7 @@ N <- 1000
 y <- sqrt(2)*rnorm(N)+10
 
 m <- stan_model(file="gaussian.stan")
-f <- vb(m)
+f <- vb(m,tol_rel_obj=0.00001,eval_elbo=10)
 
 params<-extract(f,pars=c("mu","sigma"))
 
@@ -19,6 +19,7 @@ inf_sigma <- mean(params$sigma)
 Y <- seq(inf_mu-2,inf_mu+2, length.out = 100 )
 Y_Gaussian_model <- dnorm(Y,mean=inf_mu, sd=inf_sigma)
 Y_Gaussian_exact <- dnorm(Y,mean=10, sd=sqrt(2))
+
 
 ## Plot those above at the same graph
 ggplot() +
