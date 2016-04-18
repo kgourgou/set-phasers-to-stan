@@ -14,7 +14,7 @@ Skeleton markdown file for the second homework by the variational inference team
 library(ggplot2)
 ```
 
-We shall attempt to solve an easy problem, that is, recover a pair of parameters with variational inferenceffor normal distributions. To carry it out, we would usually need the ELBO because usually we cannot compute the KL. However, from problem 1. and the result you showed, we know that the KL should be computable in a closed form as a Bregman divergence. As we said in class, 
+We shall attempt to recover a pair of parameters with variational inference for normal distributions. To carry it out, we would usually need the ELBO because we cannot compute the KL. However, from problem (1) and the result you showed, we know that the KL should be computable in a closed form as a Bregman divergence. As we said in class, 
  
  $$
  D_{KL}(p\|q)=\log\frac{\sigma_2}{\sigma_1}+\frac{\sigma_1^2+(\mu_1-\mu_2)^2}{2\sigma_2^2}-\frac{1}{2}.
@@ -37,14 +37,18 @@ KL <- function(par1,par2){
   return(result)
 }
 
-p <- c(mu=0.1,sigma=3.)
 ```
 
-Note that if we fix just the $\sigma$'s, the KL is symmetric. 
+Note that if we set $\sigma_p=\sigma_q$, the KL is symmetric. 
+
 ```{r}
+p <- c(mu=0.1,sigma=3)
+
 KL(p,q)
 KL(q,p)
 ```
+
+We could manually search across a grid to find the $\mu_p$ that minimizes $D_{KL}(p\|q)$.
 
 ```{r}
 mu <- seq(from=-3,to=3,length.out = 100)
@@ -58,10 +62,9 @@ for( i in 1:100){
   KLBvals[i] <- KL(q,p)  
 }
 
-plt<-ggplot() 
-plt<- plt+geom_line(aes(x=mu,y=KLFvals))
-plt<- plt+ylab("KL")
-plt
+ggplot() +
+    geom_line(aes(x=mu,y=KLFvals)) +
+    ylab("KL")
 ```
 
 To recover the parameters you picked above, we need to minimize the KL. To do this, you may use any R package that can do optimization. Here we use the generic "optim" function in R. 
